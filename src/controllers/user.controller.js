@@ -25,8 +25,14 @@ const findAll = async (_req, res) => {
   res.status(mapStatusHTTP(status)).json(data);
 };
 
+const findById = async (req, res) => {
+  const { status, data } = await userService.getByid(req.params.id);
+  res.status(mapStatusHTTP(status)).json(data);
+};
+
 module.exports = {
   login,
   newUser,
   findAll,
+  findById,
 };
