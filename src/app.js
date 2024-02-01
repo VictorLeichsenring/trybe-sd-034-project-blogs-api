@@ -2,6 +2,7 @@ const express = require('express');
 const {
   loginRoutes,
   userRoutes,
+  categoryRoutes,
 } = require('./routes');
 
 const app = express();
@@ -14,6 +15,7 @@ app.get('/', (_request, response) => {
 
 app.use('/login', loginRoutes);
 app.use('/user', userRoutes);
+app.use('/categories', categoryRoutes);
 
 // ...
 
