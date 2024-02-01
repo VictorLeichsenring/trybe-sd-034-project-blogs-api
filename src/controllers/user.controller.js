@@ -1,12 +1,13 @@
 const { userService } = require('../services');
 const mapStatusHTTP = require('../utils/mapStatusHTTP');
 
-const isBodyValid = (email, password) => email && password;
+const isBodyValidLogin = (email, password) => email && password;
+// const isBodyValidNewUser = (displayName, email, password, image) => displayName && email && password;
 
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  if (!isBodyValid(email, password)) {
+  if (!isBodyValidLogin(email, password)) {
     return res.status(400).json({ message: 'Some required fields are missing' });
   }
 
@@ -14,6 +15,12 @@ const login = async (req, res) => {
   res.status(mapStatusHTTP(status)).json(data);
 };
 
+const newUser = async (req, res) => {
+  const { status, data } = await userService.createUser(req.body);
+  res.status(mapStatusHTTP(status)).json(data);
+};
+
 module.exports = {
   login,
+  newUser,
 };
