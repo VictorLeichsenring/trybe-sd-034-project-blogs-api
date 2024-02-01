@@ -18,29 +18,35 @@ async function login(userCredentials) {
     return { status: 'BAD_REQUEST', data: { message: 'Invalid fields' } };
   }
 
-  const { email } = user;
-  const token = auth.createToken({ email });
+  const { email, displayName } = user;
+  
+  const token = auth.createToken({ email, displayName });
   return { status: 'SUCCESSFUL', data: { token } };
 }
 
 async function createUser(userData) {
   const error = validation.validateNewUser(userData);
   if (error) return { status: error.status, data: { message: error.message } };
-
-  const { email } = userData;
-
+  
+  const { email, displayName } = userData;
+ 
   const user = await getByEmail(email);
   if (user) {
     return { status: 'CONFLICT', data: { message: 'User already registered' } };
   }
 
   await User.create(userData);
-
-  const token = auth.createToken(email);
+  const token = auth.createToken({ email, displayName });
   return { status: 'CREATED', data: { token } };
+}
+
+async function getAllUsers() {
+  const users = await User.findAll({ attributes: { exclude: ['password'] } });
+  return { status: 'SUCCESSFUL', data: users };
 }
 
 module.exports = {
   login,
   createUser,
+  getAllUsers,
 };
