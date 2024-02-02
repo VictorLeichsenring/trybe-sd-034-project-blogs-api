@@ -46,20 +46,11 @@ async function getAll(userId) {
   const posts = await BlogPost.findAll({
     where: { userId },
     include: [
-      {
-        model: User,
-        as: 'user',
-        attributes: { exclude: ['password'] },
-      },
-      {
-        model: Category,
-        as: 'categories',
-      },
+      { model: User, as: 'user', attributes: { exclude: ['password'] } },
+      { model: Category, as: 'categories' },
     ],
-      
     attributes: { exclude: ['userId'] },
   });
-
   return { status: 'SUCCESSFUL', data: posts };
 }
 module.exports = {
