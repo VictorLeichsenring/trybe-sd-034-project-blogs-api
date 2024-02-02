@@ -1,4 +1,4 @@
-const { BlogPost, sequelize, PostCategory } = require('../models');
+const { BlogPost, User, Category, sequelize, PostCategory } = require('../models');
 const validation = require('./validations/validationsInputValues');
 
 async function createPost({ title, content, userId }, transaction) {
@@ -41,6 +41,28 @@ async function insert({ title, content, published, updated, categoryIds, userId 
   });
   return { status: 'CREATED', data: newPostData };
 }
+
+async function getAll(userId) {
+  const posts = await BlogPost.findAll({
+    where: { userId },
+    include: [
+      {
+        model: User,
+        as: 'user',
+        attributes: { exclude: ['password'] },
+      },
+      {
+        model: Category,
+        as: 'categories',
+      },
+    ],
+      
+    attributes: { exclude: ['userId'] },
+  });
+
+  return { status: 'SUCCESSFUL', data: posts };
+}
 module.exports = {
   insert,
+  getAll,
 };
