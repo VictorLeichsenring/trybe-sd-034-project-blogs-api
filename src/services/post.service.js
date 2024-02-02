@@ -1,6 +1,7 @@
 const { BlogPost, User, Category, sequelize } = require('../models');
 const validation = require('./validations/validationsInputValues');
 const { createPost, associateCategories } = require('./functions/postFunctions');
+const update = require('./post.functions/update');
 
 async function insert({ title, content, published, updated, categoryIds, userId }) {
   const error = await validation
@@ -51,8 +52,18 @@ async function getById(id) {
   return { status: 'SUCCESSFUL', data: post };
 }
 
+// async function update(id, updateData) {
+//   const post = await BlogPost.findByPk(id);
+//   if (!post) {
+//     return { status: 'NOT_FOUND', message: 'Post not found' };
+//   }
+//   const updatedPost = await post.update(updateData);
+//   return { status: 'SUCCESSFUL', data: updatedPost };
+// }
+
 module.exports = {
   insert,
   getAll,
   getById,
+  update,
 };

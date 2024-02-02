@@ -28,9 +28,16 @@ const getAll = async (req, res) => {
 };
 
 const getById = async (req, res) => {
-  console.log('CONTROLER');
   const { id } = req.params;
   const { status, data } = await postService.getById(id);
+  res.status(mapStatusHTTP(status)).json(data);
+};
+
+const updatePost = async (req, res) => {
+  const { id } = req.params;
+  const updateData = req.body;
+  const { status, data } = await postService.update(id, updateData);
+
   res.status(mapStatusHTTP(status)).json(data);
 };
 
@@ -38,4 +45,5 @@ module.exports = {
   newPost,
   getAll,
   getById,
+  updatePost,
 };
