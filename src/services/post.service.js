@@ -1,22 +1,6 @@
-const { BlogPost, User, Category, sequelize, PostCategory } = require('../models');
+const { BlogPost, User, Category, sequelize } = require('../models');
 const validation = require('./validations/validationsInputValues');
-
-async function createPost({ title, content, userId }, transaction) {
-  return BlogPost.create({
-    title,
-    content,
-    published: new Date(),
-    updated: new Date(),
-    userId,
-  }, { transaction });
-}
-async function associateCategories(postId, categoryIds, transaction) {
-  const categoryAssociations = categoryIds.map((categoryId) => PostCategory.create({
-    postId,
-    categoryId,
-  }, { transaction }));
-  await Promise.all(categoryAssociations);
-}
+const { createPost, associateCategories } = require('./functions/postFunctions');
 
 async function insert({ title, content, published, updated, categoryIds, userId }) {
   const error = await validation
@@ -53,7 +37,22 @@ async function getAll(userId) {
   });
   return { status: 'SUCCESSFUL', data: posts };
 }
+
+async function getById(id) {
+  const post = await BlogPost.findOne({
+    where: { id },
+    include: [
+      { model: User, as: 'user', attributes: { exclude: ['password'] } },
+      { model: Category, as: 'categories' },
+    ],
+  });
+
+  if (!post) return { status: 'NOT_FOUND', data: { message: 'Post does not exist' } };
+  return { status: 'SUCCESSFUL', data: post };
+}
+
 module.exports = {
   insert,
   getAll,
+  getById,
 };
